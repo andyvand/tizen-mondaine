@@ -24,7 +24,7 @@
 		this.initializeMarkers();
 		this.initializeHandles();
 		
-		setTimeout(this.movement, 1000/60);
+ 		setInterval(function() { this.movement(); }.bind(this), 1000/60);
 	}
 
 	mondaine.prototype = {
@@ -50,7 +50,7 @@
 		    try {
 		        date = tizen.time.getCurrentDateTime();
 		    } catch (err) {
-		        console.error('Error: ', err.message);
+		        //console.error('Error: ', err.message);
 		        date = new Date();
 		    }
 
@@ -94,23 +94,37 @@
 		
 		moveHourHandle: function(time){
 			var handleRef = this.handles.hour;
+			var hours = time.getHours() - 12;
+			var minutes = time.getMinutes();
+			var seconds = time.getSeconds();
+			var angle = (hours * 30) + (minutes/2) + (seconds/120);
+			
+			handleRef.css("transform", "rotate3d(0, 0, 1, "+ angle +"deg)");
 		},
 		
 		moveMinuteHandle: function(time){
 			var handleRef = this.handles.minute;
+			var minutes = time.getMinutes();
+			var seconds = time.getSeconds();
+			var angle = (minutes * 6) + (seconds /10);
+			
+			handleRef.css("transform", "rotate3d(0, 0, 1, " + angle +"deg)");
 		},
 		
 		moveSecondHandle: function(time){
 			var handleRef = this.handles.second;
+			var seconds = time.getSeconds();
+			var mseconds = time.getMilliseconds();
+			var angle = (seconds * 6) + (mseconds *6/1000);
+			
+			handleRef.css("transform", "rotate3d(0, 0, 1, " + angle +"deg)");
 			
 		},
 		
 		///
 		movement: function() {
 			var date = this.getDate();
-			
-			console.log(date);
-			
+
 			this.moveHourHandle(date);
 			this.moveMinuteHandle(date);
 			this.moveSecondHandle(date);
